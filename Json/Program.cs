@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Microsoft.EntityFrameworkCore;
 
 namespace Json
 {
@@ -41,6 +42,9 @@ namespace Json
             var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
             me.AddressDetails.State = "NY";
 
+            demoContext.SaveChanges();
+
+            demoContext.Entry(me).State = EntityState.Modified;
             demoContext.SaveChanges();
 
             me.AddressDetails = addressFaker.Generate();
