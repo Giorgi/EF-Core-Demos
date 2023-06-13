@@ -11,6 +11,8 @@ public class Employee
 
     public AddressDetails AddressDetails { get; set; }
     public List<Contact> Contacts { get; set; }
+
+    public AddressDetails BillingAddress { get; set; }
 }
 
 public class Contact

@@ -29,6 +29,7 @@ namespace Json
                 .RuleFor(e => e.Department, f => f.PickRandom(new List<string> { "IT", "Finance" }))
                 .RuleFor(e => e.AddressDetails, f => addressFaker.Generate())
                 .RuleFor(e => e.Contacts, f => contactFaker.Generate(f.Random.Number(4)))
+                .RuleFor(e => e.BillingAddress, f => addressFaker.Generate())
                 .Generate(40);
 
             var demoContext = new DemoContext();
@@ -37,21 +38,42 @@ namespace Json
 
             #region Value Converter Json Filtering and update
 
-            var filtered = demoContext.Employees.Where(e => e.AddressDetails.State == "GA").ToList();
+            //var filtered = demoContext.Employees.Where(e => e.AddressDetails.State == "GA").ToList();
 
-            var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
-            me.AddressDetails.State = "NY";
+            //var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
+            //me.AddressDetails.State = "NY";
 
-            demoContext.SaveChanges();
+            //demoContext.SaveChanges();
 
-            demoContext.Entry(me).State = EntityState.Modified;
-            demoContext.SaveChanges();
+            //demoContext.Entry(me).State = EntityState.Modified;
+            //demoContext.SaveChanges();
 
-            me.AddressDetails = addressFaker.Generate();
-            demoContext.SaveChanges();
+            //me.AddressDetails = addressFaker.Generate();
+            //demoContext.SaveChanges();
 
             #endregion
 
+            #region JSON Columns filtering
+
+            var filtered = demoContext.Employees.Where(e => e.BillingAddress.State == "GA").ToList();
+
+            var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
+            me.BillingAddress.State = "NY";
+
+            demoContext.SaveChanges();
+
+            me.BillingAddress.State = "GA";
+            me.BillingAddress.PostalCode = "1234";
+
+            demoContext.SaveChanges();
+
+            //var filterByContact = demoContext.Employees.Where(e => e.Contacts.Any(c => c.Name.StartsWith("John"))).ToList();
+            var filterByContact = demoContext.Employees.FromSql(@$"SELECT * FROM [EFDemo].[dbo].[Employees] e
+            CROSS APPLY OPENJSON(e.Contacts)
+            WITH (ContactName varchar(50) '$.Name') 
+            WHERE ContactName like 'John%'").ToList();
+
+            #endregion
         }
 
         private static void AddData(Faker<AddressDetails> addressFaker, Faker<Contact> contactFaker, List<Employee> employees)
@@ -80,6 +102,7 @@ namespace Json
                     }
                 },
                 AddressDetails = addressFaker.Generate(),
+                BillingAddress = addressFaker.Generate()
             };
 
             demoContext.Employees.Add(employee);

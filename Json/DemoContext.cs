@@ -18,8 +18,11 @@ public class DemoContext : DbContext
         modelBuilder.Entity<Employee>().Property(e => e.LastName).HasMaxLength(50);
         modelBuilder.Entity<Employee>().Property(e => e.FirstName).HasMaxLength(50);
         modelBuilder.Entity<Employee>().Property(e => e.Department).HasMaxLength(50);
-        modelBuilder.Entity<Employee>().Property(e => e.Contacts).StoreAsJson();
+        //modelBuilder.Entity<Employee>().Property(e => e.Contacts).StoreAsJson();
         modelBuilder.Entity<Employee>().Property(e => e.AddressDetails).StoreAsJson();
+
+        modelBuilder.Entity<Employee>().OwnsOne(e => e.BillingAddress).ToJson();
+        modelBuilder.Entity<Employee>().OwnsMany(e => e.Contacts).ToJson();
         
     }
 }
