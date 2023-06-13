@@ -22,7 +22,7 @@ public class DemoContext : DbContext
         modelBuilder.Entity<Employee>().Property(e => e.AddressDetails).StoreAsJson();
 
         modelBuilder.Entity<Employee>().OwnsOne(e => e.BillingAddress).ToJson();
-        modelBuilder.Entity<Employee>().OwnsMany(e => e.Contacts).ToJson();
-        
+        modelBuilder.Entity<Employee>().OwnsOne(e => e.PrimaryContact).ToJson().OwnsOne(builder => builder.Rules);
+        modelBuilder.Entity<Employee>().OwnsMany(e => e.Contacts).ToJson().OwnsOne(builder => builder.Rules);
     }
 }

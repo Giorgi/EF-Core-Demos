@@ -19,6 +19,13 @@ namespace Json
                 .RuleFor(c => c.Email, f => f.Person.Email)
                 .RuleFor(c => c.Name, f => f.Person.FullName)
                 .RuleFor(c => c.Phone, f => f.Person.Phone)
+                .RuleFor(c => c.Rules, f => new NotificationRules()
+                {
+                    AllowCall = f.Random.Bool(),
+                    AllowEmail = f.Random.Bool(),
+                    AllowSms = f.Random.Bool(),
+                    MaximumMessagesPerDay = f.Random.Number(4),
+                })
                 ;
 
             var employees = new Faker<Employee>().StrictMode(true)
@@ -30,11 +37,12 @@ namespace Json
                 .RuleFor(e => e.AddressDetails, f => addressFaker.Generate())
                 .RuleFor(e => e.Contacts, f => contactFaker.Generate(f.Random.Number(4)))
                 .RuleFor(e => e.BillingAddress, f => addressFaker.Generate())
+                .RuleFor(e => e.PrimaryContact, f => contactFaker.Generate())
                 .Generate(40);
 
             var demoContext = new DemoContext();
 
-            AddData(addressFaker, contactFaker, employees);
+            // AddData(addressFaker, contactFaker, employees);
 
             #region Value Converter Json Filtering and update
 
@@ -73,6 +81,12 @@ namespace Json
             WITH (ContactName varchar(50) '$.Name') 
             WHERE ContactName like 'John%'").ToList();
 
+            var list = demoContext.Employees.Where(e => e.PrimaryContact.Rules.MaximumMessagesPerDay > 3).ToList();
+            list[0].PrimaryContact.Phone = "1234";
+            list[0].PrimaryContact.Rules.AllowCall = false;
+            
+            demoContext.SaveChanges();
+
             #endregion
         }
 
@@ -102,7 +116,8 @@ namespace Json
                     }
                 },
                 AddressDetails = addressFaker.Generate(),
-                BillingAddress = addressFaker.Generate()
+                BillingAddress = addressFaker.Generate(),
+                PrimaryContact = contactFaker.Generate()
             };
 
             demoContext.Employees.Add(employee);
