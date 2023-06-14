@@ -32,7 +32,7 @@ namespace Json
                 .RuleFor(e => e.Id, f => 0)
                 .RuleFor(e => e.FirstName, f => f.Person.FirstName)
                 .RuleFor(e => e.LastName, f => f.Person.LastName)
-                .RuleFor(e => e.DateOfBirth, f => f.Person.DateOfBirth)
+                .RuleFor(e => e.DateOfBirth, f => DateTime.SpecifyKind(f.Person.DateOfBirth, DateTimeKind.Utc))
                 .RuleFor(e => e.Department, f => f.PickRandom(new List<string> { "IT", "Finance" }))
                 .RuleFor(e => e.AddressDetails, f => addressFaker.Generate())
                 .RuleFor(e => e.Contacts, f => contactFaker.Generate(f.Random.Number(4)))
@@ -41,7 +41,15 @@ namespace Json
                 .RuleFor(e => e.Links, f => f.Make(f.Random.Number(5), () => f.Internet.Url()))
                 .Generate(40);
 
-            var demoContext = new DemoContext();
+
+            //SqlServerExample(addressFaker, contactFaker, employees);
+
+            PostgresServerExample(addressFaker, contactFaker, employees);
+        }
+
+        private static void SqlServerExample(Faker<AddressDetails> addressFaker, Faker<Contact> contactFaker, List<Employee> employees)
+        {
+            var demoContext = new SqlServerDemoContext();
 
             //AddData(addressFaker, contactFaker, employees);
 
@@ -100,9 +108,61 @@ namespace Json
             #endregion
         }
 
+        private static void PostgresServerExample(Faker<AddressDetails> addressFaker, Faker<Contact> contactFaker, List<Employee> employees)
+        {
+            var demoContext = new PostgresDemoContext();
+
+            // AddDataPostgres(addressFaker, contactFaker, employees);
+
+            #region Filtering and update
+
+            var filtered = demoContext.Employees.Where(e => e.AddressDetails.State == "GA").ToList();
+
+            var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
+            me.AddressDetails.State = "NY";
+
+            demoContext.SaveChanges();
+
+            demoContext.Entry(me).Property(e => e.AddressDetails).IsModified = true;
+            demoContext.SaveChanges();
+
+            me.AddressDetails = addressFaker.Generate();
+            demoContext.SaveChanges();
+
+            #endregion
+
+            #region JSON Columns filtering
+
+            filtered = demoContext.Employees.Where(e => e.BillingAddress.State == "GA").ToList();
+
+            me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
+            me.BillingAddress.State = "NY";
+
+            demoContext.SaveChanges();
+
+            me.BillingAddress.State = "GA";
+            me.BillingAddress.PostalCode = "1234";
+
+            demoContext.SaveChanges();
+
+            //var filterByContact = demoContext.Employees.Where(e => e.Contacts.Any(c => c.Name.StartsWith("John"))).ToList();
+            var filterByContact = demoContext.Employees.Where(e => EF.Functions.JsonContains(e.Contacts, @"[{""Name"": ""John Doe""}]")).ToList();
+
+            filterByContact = demoContext.Employees.FromSql($"Select * from \"Employees\" where jsonb_path_exists(\"Employees\".\"Contacts\", '$[*] ? (@.Name ==\"John Doe\")')")
+                                                   .ToList();
+
+            var list = demoContext.Employees.Where(e => e.PrimaryContact.Rules.MaximumMessagesPerDay > 3).ToList();
+            list[0].PrimaryContact.Phone = "1234";
+            list[0].PrimaryContact.Rules.AllowCall = false;
+
+            demoContext.SaveChanges();
+
+            #endregion
+        }
+
         private static void AddData(Faker<AddressDetails> addressFaker, Faker<Contact> contactFaker, List<Employee> employees)
         {
-            using var demoContext = new DemoContext();
+            using var demoContext = new SqlServerDemoContext();
 
             var employee = new Employee
             {
@@ -110,6 +170,42 @@ namespace Json
                 LastName = "Dalakishvili",
                 Department = "IT",
                 DateOfBirth = new DateTime(1987, 1, 2),
+                Links = new List<string> { "https://giorgi.dev" },
+                Contacts = new List<Contact>
+                {
+                    new Contact
+                    {
+                        Email = "some@domain.com",
+                        Name = "John Doe",
+                        Phone = "111 222"
+                    },
+                    new Contact
+                    {
+                        Email = "other@domain.com",
+                        Name = "Jane Doe",
+                        Phone = "333 444"
+                    }
+                },
+                AddressDetails = addressFaker.Generate(),
+                BillingAddress = addressFaker.Generate(),
+                PrimaryContact = contactFaker.Generate()
+            };
+
+            demoContext.Employees.Add(employee);
+            demoContext.Employees.AddRange(employees);
+            demoContext.SaveChanges();
+        }
+
+        private static void AddDataPostgres(Faker<AddressDetails> addressFaker, Faker<Contact> contactFaker, List<Employee> employees)
+        {
+            using var demoContext = new PostgresDemoContext();
+
+            var employee = new Employee
+            {
+                FirstName = "Giorgi",
+                LastName = "Dalakishvili",
+                Department = "IT",
+                DateOfBirth = new DateTime(1987, 1, 2, 0, 0, 0, DateTimeKind.Utc),
                 Links = new List<string> { "https://giorgi.dev" },
                 Contacts = new List<Contact>
                 {

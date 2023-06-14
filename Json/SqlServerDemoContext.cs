@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Json;
 
-public class DemoContext : DbContext
+public class SqlServerDemoContext : DbContext
 {
     public DbSet<Employee> Employees => Set<Employee>();
 

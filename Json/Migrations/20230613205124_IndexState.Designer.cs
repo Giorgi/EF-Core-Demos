@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Json.Migrations
 {
-    [DbContext(typeof(DemoContext))]
+    [DbContext(typeof(SqlServerDemoContext))]
     [Migration("20230613205124_IndexState")]
     partial class IndexState
     {

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Json.Migrations
 {
-    [DbContext(typeof(DemoContext))]
+    [DbContext(typeof(SqlServerDemoContext))]
     partial class DemoContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
