@@ -24,5 +24,10 @@ public class DemoContext : DbContext
         modelBuilder.Entity<Employee>().OwnsOne(e => e.BillingAddress).ToJson();
         modelBuilder.Entity<Employee>().OwnsOne(e => e.PrimaryContact).ToJson().OwnsOne(builder => builder.Rules);
         modelBuilder.Entity<Employee>().OwnsMany(e => e.Contacts).ToJson().OwnsOne(builder => builder.Rules);
+
+        modelBuilder.Entity<Employee>().Property(e => e.State)
+            .HasComputedColumnSql("JSON_VALUE([BillingAddress], '$.State')");
+        
+        modelBuilder.Entity<Employee>().HasIndex(e => e.State);
     }
 }
