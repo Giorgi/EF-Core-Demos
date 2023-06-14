@@ -38,11 +38,12 @@ namespace Json
                 .RuleFor(e => e.Contacts, f => contactFaker.Generate(f.Random.Number(4)))
                 .RuleFor(e => e.BillingAddress, f => addressFaker.Generate())
                 .RuleFor(e => e.PrimaryContact, f => contactFaker.Generate())
+                .RuleFor(e => e.Links, f => f.Make(f.Random.Number(5), () => f.Internet.Url()))
                 .Generate(40);
 
             var demoContext = new DemoContext();
 
-            // AddData(addressFaker, contactFaker, employees);
+            //AddData(addressFaker, contactFaker, employees);
 
             #region Value Converter Json Filtering and update
 
@@ -84,7 +85,16 @@ namespace Json
             var list = demoContext.Employees.Where(e => e.PrimaryContact.Rules.MaximumMessagesPerDay > 3).ToList();
             list[0].PrimaryContact.Phone = "1234";
             list[0].PrimaryContact.Rules.AllowCall = false;
-            
+
+            demoContext.SaveChanges();
+
+            var companies = demoContext.Employees.Where(e => e.Links.Any(l => l.EndsWith(".com"))).ToList();
+
+            companies[0].Links.RemoveAt(0);
+            companies[0].Links.Add("https://giorgi.dev");
+
+            demoContext.Entry(companies[0]).State = EntityState.Modified;
+
             demoContext.SaveChanges();
 
             #endregion
@@ -100,6 +110,7 @@ namespace Json
                 LastName = "Dalakishvili",
                 Department = "IT",
                 DateOfBirth = new DateTime(1987, 1, 2),
+                Links = new List<string> { "https://giorgi.dev" },
                 Contacts = new List<Contact>
                 {
                     new Contact

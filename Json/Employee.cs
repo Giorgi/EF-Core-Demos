@@ -15,7 +15,9 @@ public class Employee
     public AddressDetails BillingAddress { get; set; }
 
     public Contact PrimaryContact { get; set; }
-    public string State { get;  }
+    public string State { get; }
+
+    public List<string> Links { get; set; }
 }
 
 public class Contact
