@@ -16,7 +16,7 @@ namespace HierarchicalData
 
             var root = new Tree(top.Name).Guide(TreeGuide.Line);
 
-            AddChildren(root, top, organizationPositions);
+            RenderChildren(root, top, organizationPositions);
 
             AnsiConsole.Write(root);
 
@@ -108,9 +108,29 @@ namespace HierarchicalData
             Console.WriteLine($"Common Ancestor of {title1} & {title2} is {common.Name}");
 
             #endregion
+
+            #region Add Child
+
+            title = "Chief Commercial Officer";
+            
+            var cco = context.Positions.Single(p => p.Name == title);
+
+            var descendants = context.Positions.Where(p => p.Path.IsDescendantOf(cco.Path)).ToList();
+            
+            var maxChild = descendants.Max(p => p.Path);
+            var newPath = cco.Path.GetDescendant(maxChild, null);
+            
+            context.Positions.Add(new OrganizationPosition
+            {
+                Name = "Commercial Vice President",
+                Path = newPath
+            });
+            context.SaveChanges();
+
+            #endregion
         }
 
-        private static void AddChildren(IHasTreeNodes node, OrganizationPosition parent, List<OrganizationPosition> organizationPositions)
+        private static void RenderChildren(IHasTreeNodes node, OrganizationPosition parent, List<OrganizationPosition> organizationPositions)
         {
             var children = organizationPositions.Where(p => p.Path.GetAncestor(1) == parent.Path)
                                             .OrderBy(p => p.Path);
@@ -118,7 +138,7 @@ namespace HierarchicalData
             foreach (var child in children)
             {
                 var treeNode = node.AddNode(child.Name);
-                AddChildren(treeNode, child, organizationPositions);
+                RenderChildren(treeNode, child, organizationPositions);
             }
         }
     }
