@@ -5,9 +5,11 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Json", "Json\Json.csproj", "{75C191A2-2C39-4FCE-9BB6-5CEDF18CA851}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemporalTables", "TemporalTables\TemporalTables.csproj", "{754CEEB8-A312-4ABE-9741-DDB4FA049431}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemporalTables", "TemporalTables\TemporalTables.csproj", "{754CEEB8-A312-4ABE-9741-DDB4FA049431}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HierarchicalData", "HierarchicalData\HierarchicalData.csproj", "{54BE79E5-864F-4E61-8BCB-A11D226728A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HierarchicalData", "HierarchicalData\HierarchicalData.csproj", "{54BE79E5-864F-4E61-8BCB-A11D226728A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FTS", "FTS\FTS.csproj", "{BD6B2DEB-B3EB-4194-8BD9-38A5EF60A233}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{54BE79E5-864F-4E61-8BCB-A11D226728A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54BE79E5-864F-4E61-8BCB-A11D226728A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54BE79E5-864F-4E61-8BCB-A11D226728A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD6B2DEB-B3EB-4194-8BD9-38A5EF60A233}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD6B2DEB-B3EB-4194-8BD9-38A5EF60A233}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD6B2DEB-B3EB-4194-8BD9-38A5EF60A233}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD6B2DEB-B3EB-4194-8BD9-38A5EF60A233}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
