@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HierarchicalData", "Hierarc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FTS", "FTS\FTS.csproj", "{BD6B2DEB-B3EB-4194-8BD9-38A5EF60A233}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpatialData", "SpatialData\SpatialData.csproj", "{876CFD8D-E6BB-4F1B-965D-0FF4BCFDDD03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{BD6B2DEB-B3EB-4194-8BD9-38A5EF60A233}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD6B2DEB-B3EB-4194-8BD9-38A5EF60A233}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD6B2DEB-B3EB-4194-8BD9-38A5EF60A233}.Release|Any CPU.Build.0 = Release|Any CPU
+		{876CFD8D-E6BB-4F1B-965D-0FF4BCFDDD03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{876CFD8D-E6BB-4F1B-965D-0FF4BCFDDD03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{876CFD8D-E6BB-4F1B-965D-0FF4BCFDDD03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{876CFD8D-E6BB-4F1B-965D-0FF4BCFDDD03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
