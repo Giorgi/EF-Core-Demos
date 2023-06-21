@@ -1,4 +1,6 @@
-﻿namespace FTS;
+﻿using NpgsqlTypes;
+
+namespace FTS;
 
 public class Post
 {
@@ -7,4 +9,6 @@ public class Post
     public string Body { get; set; }
     public string Author { get; set; }
     public string Tags { get; set; }
+
+    public NpgsqlTsVector SearchDocument { get; set; }
 }
