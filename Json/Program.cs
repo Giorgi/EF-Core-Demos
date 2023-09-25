@@ -5,7 +5,7 @@ namespace Json
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
 
@@ -34,76 +34,66 @@ namespace Json
                 .RuleFor(e => e.LastName, f => f.Person.LastName)
                 .RuleFor(e => e.DateOfBirth, f => DateTime.SpecifyKind(f.Person.DateOfBirth, DateTimeKind.Utc))
                 .RuleFor(e => e.Department, f => f.PickRandom(new List<string> { "IT", "Finance" }))
-                .RuleFor(e => e.AddressDetails, f => addressFaker.Generate())
                 .RuleFor(e => e.Contacts, f => contactFaker.Generate(f.Random.Number(4)))
                 .RuleFor(e => e.BillingAddress, f => addressFaker.Generate())
                 .RuleFor(e => e.PrimaryContact, f => contactFaker.Generate())
                 .RuleFor(e => e.Links, f => f.Make(f.Random.Number(5), () => f.Internet.Url()))
                 .Generate(40);
 
+            await SqlServerExample(addressFaker, contactFaker, employees);
 
-            //SqlServerExample(addressFaker, contactFaker, employees);
-
-            PostgresServerExample(addressFaker, contactFaker, employees);
+            //PostgresServerExample(addressFaker, contactFaker, employees);
         }
 
-        private static void SqlServerExample(Faker<AddressDetails> addressFaker, Faker<Contact> contactFaker, List<Employee> employees)
+        private static async Task SqlServerExample(Faker<AddressDetails> addressFaker, Faker<Contact> contactFaker, List<Employee> employees)
         {
             var demoContext = new SqlServerDemoContext();
 
-            //AddData(addressFaker, contactFaker, employees);
-
-            #region Value Converter Json Filtering and update
-
-            //var filtered = demoContext.Employees.Where(e => e.AddressDetails.State == "GA").ToList();
-
-            //var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
-            //me.AddressDetails.State = "NY";
-
-            //demoContext.SaveChanges();
-
-            //demoContext.Entry(me).State = EntityState.Modified;
-            //demoContext.SaveChanges();
-
-            //me.AddressDetails = addressFaker.Generate();
-            //demoContext.SaveChanges();
-
-            #endregion
+            //await AddData(addressFaker, contactFaker, employees);
 
             #region JSON Columns filtering
 
             var filtered = demoContext.Employees.Where(e => e.BillingAddress.State == "GA").ToList();
 
             var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
-            me.BillingAddress.State = "NY";
-
-            demoContext.SaveChanges();
 
             me.BillingAddress.State = "GA";
             me.BillingAddress.PostalCode = "1234";
 
-            demoContext.SaveChanges();
+            await demoContext.SaveChangesAsync();
 
-            //var filterByContact = demoContext.Employees.Where(e => e.Contacts.Any(c => c.Name.StartsWith("John"))).ToList();
-            var filterByContact = demoContext.Employees.FromSql(@$"SELECT * FROM [EFDemo].[dbo].[Employees] e
-            CROSS APPLY OPENJSON(e.Contacts)
-            WITH (ContactName varchar(50) '$.Name') 
-            WHERE ContactName like 'John%'").ToList();
+            //New in EF Core 8
+            var filterByContact = demoContext.Employees.Where(e => e.Contacts.Any(c => c.Name.StartsWith("John"))).ToList();
+
+
+            //New in EF Core 8
+            var firstContacts = await demoContext.Employees.Where(e => e.Contacts.Any()).Select(e => new
+            {
+                e.FirstName,
+                e.LastName,
+                e.Contacts[0].Name,
+                e.Contacts[0].Phone,
+                e.Contacts.Count
+            }).ToListAsync();
+
+            //filterByContact = demoContext.Employees.FromSql(@$"SELECT * FROM [EFDemo].[dbo].[Employees] e
+            //CROSS APPLY OPENJSON(e.Contacts)
+            //WITH (ContactName varchar(50) '$.Name') 
+            //WHERE ContactName like 'John%'").ToList();
 
             var list = demoContext.Employees.Where(e => e.PrimaryContact.Rules.MaximumMessagesPerDay > 3).ToList();
             list[0].PrimaryContact.Phone = "1234";
             list[0].PrimaryContact.Rules.AllowCall = false;
 
-            demoContext.SaveChanges();
+            await demoContext.SaveChangesAsync();
 
+            //New in EF Core 8
             var companies = demoContext.Employees.Where(e => e.Links.Any(l => l.EndsWith(".com"))).ToList();
 
             companies[0].Links.RemoveAt(0);
             companies[0].Links.Add("https://giorgi.dev");
 
-            demoContext.Entry(companies[0]).State = EntityState.Modified;
-
-            demoContext.SaveChanges();
+            await demoContext.SaveChangesAsync();
 
             #endregion
         }
@@ -116,26 +106,26 @@ namespace Json
 
             #region Filtering and update
 
-            var filtered = demoContext.Employees.Where(e => e.AddressDetails.State == "GA").ToList();
+            //var filtered = demoContext.Employees.Where(e => e.AddressDetails.State == "GA").ToList();
 
-            var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
-            me.AddressDetails.State = "NY";
+            //var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
+            //me.AddressDetails.State = "NY";
 
-            demoContext.SaveChanges();
+            //demoContext.SaveChanges();
 
-            demoContext.Entry(me).Property(e => e.AddressDetails).IsModified = true;
-            demoContext.SaveChanges();
+            //demoContext.Entry(me).Property(e => e.AddressDetails).IsModified = true;
+            //demoContext.SaveChanges();
 
-            me.AddressDetails = addressFaker.Generate();
-            demoContext.SaveChanges();
+            //me.AddressDetails = addressFaker.Generate();
+            //demoContext.SaveChanges();
 
             #endregion
 
             #region JSON Columns filtering
 
-            filtered = demoContext.Employees.Where(e => e.BillingAddress.State == "GA").ToList();
+            var filtered = demoContext.Employees.Where(e => e.BillingAddress.State == "GA").ToList();
 
-            me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
+            var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
             me.BillingAddress.State = "NY";
 
             demoContext.SaveChanges();
@@ -160,9 +150,11 @@ namespace Json
             #endregion
         }
 
-        private static void AddData(Faker<AddressDetails> addressFaker, Faker<Contact> contactFaker, List<Employee> employees)
+        private static async Task AddData(Faker<AddressDetails> addressFaker, Faker<Contact> contactFaker, List<Employee> employees)
         {
-            using var demoContext = new SqlServerDemoContext();
+            await using var demoContext = new SqlServerDemoContext();
+
+            await demoContext.Database.MigrateAsync();
 
             var employee = new Employee
             {
@@ -170,7 +162,7 @@ namespace Json
                 LastName = "Dalakishvili",
                 Department = "IT",
                 DateOfBirth = new DateTime(1987, 1, 2),
-                Links = new List<string> { "https://giorgi.dev" },
+                Links = new List<string> { "https://aboutmycode.com" },
                 Contacts = new List<Contact>
                 {
                     new Contact
@@ -186,14 +178,13 @@ namespace Json
                         Phone = "333 444"
                     }
                 },
-                AddressDetails = addressFaker.Generate(),
                 BillingAddress = addressFaker.Generate(),
                 PrimaryContact = contactFaker.Generate()
             };
 
             demoContext.Employees.Add(employee);
             demoContext.Employees.AddRange(employees);
-            demoContext.SaveChanges();
+            await demoContext.SaveChangesAsync();
         }
 
         private static void AddDataPostgres(Faker<AddressDetails> addressFaker, Faker<Contact> contactFaker, List<Employee> employees)
@@ -222,7 +213,6 @@ namespace Json
                         Phone = "333 444"
                     }
                 },
-                AddressDetails = addressFaker.Generate(),
                 BillingAddress = addressFaker.Generate(),
                 PrimaryContact = contactFaker.Generate()
             };

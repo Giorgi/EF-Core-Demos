@@ -9,7 +9,6 @@ public class Employee
     public string Department { get; set; }
     public DateTime DateOfBirth { get; set; }
 
-    public AddressDetails AddressDetails { get; set; }
     public List<Contact> Contacts { get; set; }
 
     public AddressDetails BillingAddress { get; set; }

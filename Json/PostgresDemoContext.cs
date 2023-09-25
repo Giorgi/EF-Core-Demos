@@ -19,7 +19,7 @@ public class PostgresDemoContext : DbContext
         modelBuilder.Entity<Employee>().Property(e => e.FirstName).HasMaxLength(50);
         modelBuilder.Entity<Employee>().Property(e => e.Department).HasMaxLength(50);
         
-        modelBuilder.Entity<Employee>().Property(e => e.AddressDetails).HasColumnType("jsonb");
+        //modelBuilder.Entity<Employee>().Property(e => e.AddressDetails).HasColumnType("jsonb");
 
         modelBuilder.Entity<Employee>().Property(e => e.BillingAddress).HasColumnType("jsonb");
         modelBuilder.Entity<Employee>().Property(e => e.PrimaryContact).HasColumnType("jsonb");
