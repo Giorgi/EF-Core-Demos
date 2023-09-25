@@ -5,12 +5,14 @@ namespace HierarchicalData
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
 
             var context = new HierarchicalDataContext();
-            var organizationPositions = context.Positions.ToList();
+            await context.Database.MigrateAsync();
+
+            var organizationPositions = await context.Positions.ToListAsync();
 
             var top = organizationPositions.Single(p => p.Path.GetLevel() == 0);
 
@@ -23,7 +25,7 @@ namespace HierarchicalData
             #region Filter By Level
 
             var level = 2;
-            var positions = context.Positions.Where(p => p.Path.GetLevel() == level).ToList();
+            var positions = await context.Positions.Where(p => p.Path.GetLevel() == level).ToListAsync();
 
             Console.WriteLine();
             Console.WriteLine("Positions on level {0}", level);
@@ -42,9 +44,9 @@ namespace HierarchicalData
             var title = "CFO";
 
             var cfo = context.Positions.Single(p => p.Name == title);
-            positions = context.Positions.Where(p => p.Path.IsDescendantOf(cfo.Path) && p.Id != cfo.Id)
+            positions = await context.Positions.Where(p => p.Path.IsDescendantOf(cfo.Path) && p.Id != cfo.Id)
                                          .OrderBy(p => p.Path.GetLevel()).ThenBy(p => p.Path)
-                                         .ToList();
+                                         .ToListAsync();
 
             Console.WriteLine();
             Console.WriteLine("Descendants of {0}", title);
@@ -62,8 +64,8 @@ namespace HierarchicalData
             #region Find Ancestors
             title = ".Net Senior Engineer";
             var engineer = context.Positions.Single(p => p.Name == title);
-            positions = context.Positions.Where(p => engineer.Path.IsDescendantOf(p.Path) && p.Id != cfo.Id)
-                                         .OrderByDescending(p => p.Path.GetLevel()).ToList();
+            positions = await context.Positions.Where(p => engineer.Path.IsDescendantOf(p.Path) && p.Id != cfo.Id)
+                                         .OrderByDescending(p => p.Path.GetLevel()).ToListAsync();
 
             Console.WriteLine();
             Console.WriteLine("Ancestors of {0}", title);
@@ -79,8 +81,8 @@ namespace HierarchicalData
             #region Direct Ancestor
 
             title = "CTO";
-            positions = context.Positions
-                               .Where(p => p.Path.GetAncestor(1) == context.Positions.Single(o => o.Name == title).Path).ToList();
+            positions = await context.Positions
+                               .Where(p => p.Path.GetAncestor(1) == context.Positions.Single(o => o.Name == title).Path).ToListAsync();
             Console.WriteLine();
             Console.WriteLine("Direct descendants of {0}", title);
             Console.WriteLine();
@@ -97,12 +99,12 @@ namespace HierarchicalData
             var title1 = "Frontend Team Lead";
             var title2 = ".Net Junior Engineer";
 
-            var frontEndTeamLeadPosition = context.Positions.Single(p => p.Name == title1);
-            var netJuniorEngineer = context.Positions.Single(p => p.Name == title2);
+            var frontEndTeamLeadPosition = await context.Positions.SingleAsync(p => p.Name == title1);
+            var netJuniorEngineer = await context.Positions.SingleAsync(p => p.Name == title2);
 
-            var common = context.Positions.Where(p => frontEndTeamLeadPosition.Path.IsDescendantOf(p.Path)
+            var common = await context.Positions.Where(p => frontEndTeamLeadPosition.Path.IsDescendantOf(p.Path)
                                                       && netJuniorEngineer.Path.IsDescendantOf(p.Path))
-                                                  .OrderByDescending(p => p.Path).First();
+                                                  .OrderByDescending(p => p.Path).FirstAsync();
 
             Console.WriteLine();
             Console.WriteLine($"Common Ancestor of {title1} & {title2} is {common.Name}");
@@ -112,20 +114,20 @@ namespace HierarchicalData
             #region Add Child
 
             title = "Chief Commercial Officer";
-            
-            var cco = context.Positions.Single(p => p.Name == title);
 
-            var descendants = context.Positions.Where(p => p.Path.IsDescendantOf(cco.Path)).ToList();
-            
+            var cco = await context.Positions.SingleAsync(p => p.Name == title);
+
+            var descendants = await context.Positions.Where(p => p.Path.IsDescendantOf(cco.Path)).ToListAsync();
+
             var maxChild = descendants.Max(p => p.Path);
             var newPath = cco.Path.GetDescendant(maxChild, null);
-            
+
             context.Positions.Add(new OrganizationPosition
             {
                 Name = "Commercial Vice President",
                 Path = newPath
             });
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             #endregion
         }

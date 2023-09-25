@@ -9,9 +9,13 @@ public class HierarchicalDataContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
-            .LogTo(Console.WriteLine, (_, level) => level == LogLevel.Information)
+            .LogTo(s =>
+            {
+                Console.WriteLine(s);
+                Console.WriteLine();
+            }, (_, level) => level == LogLevel.Information)
             .EnableSensitiveDataLogging()
-            .UseSqlServer("server=localhost;database=EFDemo;Trusted_Connection=True;Encrypt=false", b => b.UseHierarchyId());
+            .UseSqlServer("server=(localdb)\\MSSQLLocalDB;database=EFDemo;Trusted_Connection=True;Encrypt=false", b => b.UseHierarchyId());
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
