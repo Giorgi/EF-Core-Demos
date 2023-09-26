@@ -57,6 +57,10 @@ namespace Json
 
             var me = demoContext.Employees.First(e => e.FirstName == "Giorgi");
 
+            me.BillingAddress.State = "NY";
+
+            await demoContext.SaveChangesAsync();
+
             me.BillingAddress.State = "GA";
             me.BillingAddress.PostalCode = "1234";
 
@@ -88,10 +92,10 @@ namespace Json
             await demoContext.SaveChangesAsync();
 
             //New in EF Core 8
-            var companies = demoContext.Employees.Where(e => e.Links.Any(l => l.EndsWith(".com"))).ToList();
+            var employeesWithLinks = demoContext.Employees.Where(e => e.Links.Any(l => l.EndsWith(".com"))).ToList();
 
-            companies[0].Links.RemoveAt(0);
-            companies[0].Links.Add("https://giorgi.dev");
+            employeesWithLinks[0].Links.RemoveAt(0);
+            employeesWithLinks[0].Links.Add("https://giorgi.dev");
 
             await demoContext.SaveChangesAsync();
 

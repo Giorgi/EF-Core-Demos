@@ -5,16 +5,17 @@ namespace TemporalTables
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
 
-            GenerateSampleData(50);
+            //await GenerateSampleData(50);
 
             var context = new TemporalSampleContext();
-            var persons = context.Persons.TemporalAsOf(DateTime.Now.AddHours(-1)).ToList();
 
-            var addressesOld = context.Addresses.TemporalBetween(DateTime.Today.AddDays(-3), DateTime.Now)
+            var persons = await context.Persons.TemporalAsOf(DateTime.Now.AddHours(-10)).OrderBy(p => p.Id).ToListAsync();
+
+            var addressesOld = await context.Addresses.TemporalBetween(DateTime.Today.AddDays(-3), DateTime.Now)
                 .OrderBy(a => EF.Property<DateTime>(a, "PeriodStart")).Select(
                     c => new
                     {
@@ -23,29 +24,35 @@ namespace TemporalTables
                         ValidFrom = EF.Property<DateTime>(c, "PeriodStart"),
                         ValidTo = EF.Property<DateTime>(c, "PeriodEnd")
                     })
-                .ToList();
+                .ToListAsync();
 
-            var withContacts = context.Persons.TemporalAsOf(DateTime.Now.AddHours(-1)).Include(p => p.Contacts).ToList();
+            var withAddressNow = await context.Persons.Include(p => p.Address).FirstAsync(p => p.Id == 1);
+            
+            var withAddress1 = await context.Persons.TemporalAsOf(DateTime.Now.AddHours(-5)).Include(p => p.Address).FirstAsync(p => p.Id == 1);
+            
+            var withAddress2 = await context.Persons.TemporalAsOf(DateTime.Now.AddHours(-20)).Include(p => p.Address).FirstAsync(p => p.Id == 1);
 
-            DeletePerson(50);
+            var withAddress3 = await context.Persons.TemporalAsOf(DateTime.Now.AddHours(-30)).Include(p => p.Address).FirstAsync(p => p.Id == 1);
 
-            var deleted = context.Persons.TemporalAll()
-                .OrderByDescending(customer => EF.Property<DateTime>(customer, "PeriodEnd")).First(p => p.Id == 50);
+            await DeletePerson(1);
+
+            var deleted = await context.Persons.TemporalAll()
+                .OrderByDescending(customer => EF.Property<DateTime>(customer, "PeriodEnd")).FirstAsync(p => p.Id == 1);
 
             deleted.Id = 0;
             context.Persons.Add(deleted);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        private static void DeletePerson(int id)
+        private static async Task DeletePerson(int id)
         {
             using var context = new TemporalSampleContext();
             var person = context.Persons.Include(p => p.Contacts).First(c => c.Id == id);
             context.Persons.Remove(person);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        private static void GenerateSampleData(int count)
+        private static async Task GenerateSampleData(int count)
         {
             var addressFaker = new Faker<Address>().StrictMode(true)
                 .RuleFor(e => e.Id, f => 0)
@@ -70,7 +77,7 @@ namespace TemporalTables
 
             using var temporalSampleContext = new TemporalSampleContext();
             temporalSampleContext.Persons.AddRange(persons);
-            temporalSampleContext.SaveChanges();
+            await temporalSampleContext.SaveChangesAsync();
         }
     }
 }
