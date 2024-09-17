@@ -17,7 +17,7 @@ public class SqlServerDemoContext : DbContext
                 Console.WriteLine();
             }, (e, level) => level == LogLevel.Information)
             .EnableSensitiveDataLogging()
-            .UseSqlServer("server=(localdb)\\MSSQLLocalDB;database=EFDemo;Trusted_Connection=True;Encrypt=false");
+            .UseSqlServer("server=(localdb)\\ProjectModels;database=EFDemo;Trusted_Connection=True;Encrypt=false");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -14,7 +14,7 @@ public class TemporalSampleContext : DbContext
         => optionsBuilder
             .LogTo(Console.WriteLine, (_, level) => level == LogLevel.Information)
             .EnableSensitiveDataLogging()
-            .UseSqlServer("server=(localdb)\\MSSQLLocalDB;database=EFDemoTemporal;Trusted_Connection=True;Encrypt=false");
+            .UseSqlServer("server=(localdb)\\ProjectModels;database=EFDemoTemporal;Trusted_Connection=True;Encrypt=false");
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

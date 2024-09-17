@@ -15,7 +15,7 @@ public class HierarchicalDataContext : DbContext
                 Console.WriteLine();
             }, (_, level) => level == LogLevel.Information)
             .EnableSensitiveDataLogging()
-            .UseSqlServer("server=(localdb)\\MSSQLLocalDB;database=EFDemo;Trusted_Connection=True;Encrypt=false", b => b.UseHierarchyId());
+            .UseSqlServer("server=(localdb)\\ProjectModels;database=EFDemo;Trusted_Connection=True;Encrypt=false", b => b.UseHierarchyId());
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

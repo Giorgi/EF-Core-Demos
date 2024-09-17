@@ -49,7 +49,7 @@ namespace Json
         {
             var demoContext = new SqlServerDemoContext();
 
-            //await AddData(addressFaker, contactFaker, employees);
+            await AddData(addressFaker, contactFaker, employees);
 
             #region JSON Columns filtering
 
