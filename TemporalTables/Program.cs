@@ -76,6 +76,8 @@ namespace TemporalTables
                 .Generate(count);
 
             using var temporalSampleContext = new TemporalSampleContext();
+            await temporalSampleContext.Database.MigrateAsync();
+
             temporalSampleContext.Persons.AddRange(persons);
             await temporalSampleContext.SaveChangesAsync();
         }
