@@ -41,10 +41,10 @@ namespace HierarchicalData
 
             #region Find Descendants
 
-            var title = "CFO";
+            var title = "CTO";
 
-            var cfo = context.Positions.Single(p => p.Name == title);
-            positions = await context.Positions.Where(p => p.Path.IsDescendantOf(cfo.Path) && p.Id != cfo.Id)
+            var cto = context.Positions.Single(p => p.Name == title);
+            positions = await context.Positions.Where(p => p.Path.IsDescendantOf(cto.Path) && p.Id != cto.Id)
                                          .OrderBy(p => p.Path.GetLevel()).ThenBy(p => p.Path)
                                          .ToListAsync();
 
@@ -64,7 +64,7 @@ namespace HierarchicalData
             #region Find Ancestors
             title = ".Net Senior Engineer";
             var engineer = context.Positions.Single(p => p.Name == title);
-            positions = await context.Positions.Where(p => engineer.Path.IsDescendantOf(p.Path) && p.Id != cfo.Id)
+            positions = await context.Positions.Where(p => engineer.Path.IsDescendantOf(p.Path) && p.Id != engineer.Id)
                                          .OrderByDescending(p => p.Path.GetLevel()).ToListAsync();
 
             Console.WriteLine();

@@ -24,172 +24,172 @@ public class HierarchicalDataContext : DbContext
 
         var data = new List<OrganizationPosition>
         {
-            new OrganizationPosition
+            new()
             {
                 Name = "CEO",
                 Path = HierarchyId.Parse("/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Chief Commercial Officer",
                 Path = HierarchyId.Parse("/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Global Retail",
                 Path = HierarchyId.Parse("/1/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Enterprise Sales",
                 Path = HierarchyId.Parse("/1/2/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "CTO",
                 Path = HierarchyId.Parse("/2/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Head of Software Development",
                 Path = HierarchyId.Parse("/2/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = ".Net Team Lead",
                 Path = HierarchyId.Parse("/2/1/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = ".Net Senior Engineer",
                 Path = HierarchyId.Parse("/2/1/1/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = ".Net Junior Engineer",
                 Path = HierarchyId.Parse("/2/1/1/2/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Frontend Team Lead",
                 Path = HierarchyId.Parse("/2/1/2/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Head of AI, ChatGPT, BlockChain and other buzzwords",
                 Path = HierarchyId.Parse("/2/2/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Chief AI Bot",
                 Path = HierarchyId.Parse("/2/2/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Chief Prompt Engineer",
                 Path = HierarchyId.Parse("/2/2/2/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Chief Web3 Developer",
                 Path = HierarchyId.Parse("/2/2/3/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Chief Marketing Officer",
                 Path = HierarchyId.Parse("/3/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Marketing Communications Head",
                 Path = HierarchyId.Parse("/3/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Marketing Communications Sr. Officer",
                 Path = HierarchyId.Parse("/3/1/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Marketing Social Communications Sr. Officer",
                 Path = HierarchyId.Parse("/3/1/2/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Marketing Communications Jr. Officer",
                 Path = HierarchyId.Parse("/3/1/3/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Marketing Communications Intern",
                 Path = HierarchyId.Parse("/3/1/1/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Marketing Advertising Head",
                 Path = HierarchyId.Parse("/3/2/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Advertising Agency Director",
                 Path = HierarchyId.Parse("/3/2/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Advertising Agency Specialist",
                 Path = HierarchyId.Parse("/3/2/1/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Marketing Brand Head",
                 Path = HierarchyId.Parse("/3/3/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Marketing Brand Manager",
                 Path = HierarchyId.Parse("/3/3/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "CFO",
                 Path = HierarchyId.Parse("/4/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Corporate Vice President Finances",
                 Path = HierarchyId.Parse("/4/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Chief Accountant",
                 Path = HierarchyId.Parse("/4/1/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Accounting Manager",
                 Path = HierarchyId.Parse("/4/1/1/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Accountant",
                 Path = HierarchyId.Parse("/4/1/1/1/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Head of Budgeting",
                 Path = HierarchyId.Parse("/4/1/2/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Finance Analyst",
                 Path = HierarchyId.Parse("/4/1/2/1/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Head of Tax Department",
                 Path = HierarchyId.Parse("/4/2/")
             },
-            new OrganizationPosition
+            new()
             {
                 Name = "Head of Reporting Department",
                 Path = HierarchyId.Parse("/4/2/")
