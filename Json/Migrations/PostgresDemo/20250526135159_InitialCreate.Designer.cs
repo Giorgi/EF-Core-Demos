@@ -10,18 +10,18 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Json.Migrations.PostgresMigrations
+namespace Json.Migrations.PostgresDemo
 {
     [DbContext(typeof(PostgresDemoContext))]
-    [Migration("20230614152642_InitialCreatePostgres")]
-    partial class InitialCreatePostgres
+    [Migration("20250526135159_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -33,10 +33,6 @@ namespace Json.Migrations.PostgresMigrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<AddressDetails>("AddressDetails")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
 
                     b.Property<AddressDetails>("BillingAddress")
                         .IsRequired()
@@ -58,6 +54,10 @@ namespace Json.Migrations.PostgresMigrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<List<DateOnly>>("ImportantDates")
+                        .IsRequired()
+                        .HasColumnType("date[]");
 
                     b.Property<string>("LastName")
                         .IsRequired()

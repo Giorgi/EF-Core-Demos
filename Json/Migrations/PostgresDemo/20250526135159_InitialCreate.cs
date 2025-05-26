@@ -6,10 +6,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Json.Migrations.PostgresMigrations
+namespace Json.Migrations.PostgresDemo
 {
     /// <inheritdoc />
-    public partial class InitialCreatePostgres : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,10 +24,10 @@ namespace Json.Migrations.PostgresMigrations
                     LastName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Department = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AddressDetails = table.Column<AddressDetails>(type: "jsonb", nullable: false),
                     Contacts = table.Column<List<Contact>>(type: "jsonb", nullable: false),
                     BillingAddress = table.Column<AddressDetails>(type: "jsonb", nullable: false),
                     PrimaryContact = table.Column<Contact>(type: "jsonb", nullable: false),
+                    ImportantDates = table.Column<List<DateOnly>>(type: "date[]", nullable: false),
                     Links = table.Column<List<string>>(type: "text[]", nullable: false)
                 },
                 constraints: table =>

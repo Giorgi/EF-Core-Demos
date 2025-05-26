@@ -16,6 +16,7 @@ public class Employee
     public Contact PrimaryContact { get; set; }
     public string State { get; }
 
+    public List<DateOnly> ImportantDates { get; set; }
     public List<string> Links { get; set; }
 }
 
